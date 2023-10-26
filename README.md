@@ -74,12 +74,12 @@ Closed Issues: ![GitHub issues](https://img.shields.io/github/issues-closed/omar
 
 ### Open Issues:
   - [Issue Name 1](https://github.com/omardbaa/Real-time-Data-Pipeline-Development-for-User-Profile-Analysis/issues/1)
-  - [Issue Name 2](https://github.com/omardbaa/Real-time-Data-Pipeline-Development-for-User-Profile-Analysis/issues2)
+  - [Issue Name 2](https://github.com/omardbaa/Real-time-Data-Pipeline-Development-for-User-Profile-Analysis/issues/2)
   - [Issue Name 3](https://github.com/omardbaa/Real-time-Data-Pipeline-Development-for-User-Profile-Analysis/issues/3)
 
 ### Closed Issues:
   - [Issue Name 4](https://github.com/omardbaa/Real-time-Data-Pipeline-Development-for-User-Profile-Analysis/issues/4)
-  - [Issue Name 5](https://github.com/omardbaa/Real-time-Data-Pipeline-Development-for-User-Profile-Analysis/issues5)
+  - [Issue Name 5](https://github.com/omardbaa/Real-time-Data-Pipeline-Development-for-User-Profile-Analysis/issues/5)
   - [Issue Name 6](https://github.com/omardbaa/Real-time-Data-Pipeline-Development-for-User-Profile-Analysis/issues/6)
 
 </details>
