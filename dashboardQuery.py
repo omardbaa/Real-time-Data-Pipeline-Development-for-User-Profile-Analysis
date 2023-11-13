@@ -137,3 +137,8 @@ def update_graphs(n_clicks):
 
 if __name__ == '__main__':
     app.run_server(debug=True)
+
+
+
+
+

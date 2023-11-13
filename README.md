@@ -85,4 +85,19 @@ Closed Issues: ![GitHub issues](https://img.shields.io/github/issues-closed/omar
 </details>
 
 
+**Data Visualization:**
+
+- Number of Users by Nationality
+![Alt text](image.png)
+
+- Average Age of Users by Nationality
+  ![Alt text](image-1.png)
+
+- Average Age of Users by Country
+ ![Alt text](image-2.png)
+
+- Most Common Email Domains
+ ![Alt text](image-3.png)
+
+ 
 Enjoy working with real-time data and happy coding! ✨

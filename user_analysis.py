@@ -1,8 +1,6 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import from_json, col, to_date, datediff, current_date, concat_ws, explode, sha2
+from pyspark.sql.functions import from_json, col, datediff, current_date, concat_ws, explode, sha2
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, ArrayType
-import pymongo
-import uuid
 from cassandra.cluster import Cluster
 
 # Spark configuration 
@@ -18,6 +16,7 @@ spark = SparkSession.builder \
 kafka_source = spark.readStream.format("kafka") \
     .option("kafka.bootstrap.servers", "localhost:9092") \
     .option("subscribe", "user_profiles") \
+    .option("failOnDataLoss", "false") \
     .load()
 
 # the schema for parsing JSON data
@@ -72,23 +71,6 @@ parsedStreamDF = kafka_source.selectExpr("CAST(value AS STRING) as json") \
     .select("data.*") \
     .select(explode(col("results")).alias("final-results"))
 
-# Access the first element of the "results.dob.date" array and convert it to a date
-flattenedDF = parsedStreamDF.withColumn("dob_date", to_date(col("final-results.dob.date"), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
-
-# Concatenate fields to create full_name and full_address
-flattenedDF = flattenedDF.withColumn("full_name", concat_ws(" ", flattenedDF["final-results"]["name"]["first"], flattenedDF["final-results"]["name"]["last"]))
-flattenedDF = flattenedDF.withColumn("full_address", concat_ws(", ",
-    flattenedDF["final-results"]["location"]["street"]["name"],
-    flattenedDF["final-results"]["location"]["street"]["number"],
-    flattenedDF["final-results"]["location"]["city"],
-    flattenedDF["final-results"]["location"]["state"],
-    flattenedDF["final-results"]["location"]["country"],
-    flattenedDF["final-results"]["location"]["postcode"]
-))
-
-
-final_output_df = flattenedDF.select("final-results", "full_name", "full_address", "dob_date", col("final-results.dob.age").alias("age"))
-
 
 
 final_output_df = parsedStreamDF.select(
@@ -100,8 +82,8 @@ final_output_df = parsedStreamDF.select(
     col("final-results.name.last").alias("last"),
     concat_ws(" ", col("final-results.name.first"), col("final-results.name.last")).alias("full_name"),
     col("final-results.login.username").alias("username"),
-    sha2(col("final-results.email"), 256).alias("email"),  # Encrypt email using SHA-256
-    sha2(col("final-results.phone"), 256).alias("phone"),  # Encrypt phone using SHA-256
+    sha2(col("final-results.email"), 256).alias("email"),  
+    sha2(col("final-results.phone"), 256).alias("phone"),  
     concat_ws(", ", col("final-results.location.city"), 
             col("final-results.location.state"), 
             col("final-results.location.country")).alias("full_address"),
@@ -117,7 +99,7 @@ final_output_df = parsedStreamDF.select(
 
 
 
-mongo_uri = "mongodb://localhost:27017"  # Replace with your MongoDB connection URI
+mongo_uri = "mongodb://localhost:27017"  
 mongo_db_name = "user_profiles"
 collection_name = "user_collection"
 
@@ -212,12 +194,6 @@ result_df_clean.writeStream \
 
 query = final_output_df.writeStream.outputMode("append").format("console").start()
 
-
-# # Define the output query for the console
-# console_output_query = final_output_df.writeStream \
-#     .outputMode("append") \
-#     .format("console") \
-#     .start()
 
 # Start the Spark session
 spark.streams.awaitAnyTermination()
